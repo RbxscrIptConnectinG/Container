@@ -10,4 +10,4 @@ there's many reasons why, for example:
 2. maybe publishing it to.. *GULP* [wally](https://wally.run/)..
 
 API is coming soon.. but for now
-just check [source code](https://github.com/RbxscrIptConnectinG/Container/blob/main/container/init.luau) to check what functions do and etc.
+just check [source code](https://github.com/RbxscrIptConnectinG/Container/blob/main/container/init.luau) for info
