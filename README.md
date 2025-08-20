@@ -119,21 +119,21 @@ Activates SemiDestroy functions and clears self
 
 # Shortcut functions
 
-**DisconnectAll**
+**DisconnectAll**:
 RemoveAndDestroyAllIn("Connections")
 ```lua
     -- NewContainer.DisconnectAll -> (self) -> nil
     NewContainer:DisconnectAll()
 ```
 
-**DestroyAllAny**
+**DestroyAllAny**:
 RemoveAndDestroyAllIn("Any")
 ```lua
     -- NewContainer.DestroyAllAny -> (self) -> nil
     NewContainer:DestroyAllAny()
 ```
 
-**SemiDestroy**
+**SemiDestroy**:
 RemoveAndDestroyAllIn("All")
 ```lua
     -- NewContainer.SemiDestroy -> (self) -> nil
