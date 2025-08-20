@@ -9,7 +9,7 @@ there's many reasons why, for example:
 1. hi.
 2. maybe publishing it to.. *GULP* [wally](https://wally.run/)..
 
-# API
+# Functions
 
 # new Container
 ```lua
