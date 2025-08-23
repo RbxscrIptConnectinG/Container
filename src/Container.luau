@@ -2,60 +2,10 @@
 --_scriptType="module"
 --[[
 
-	--made in T10-Studio by: t10_kol|ID:3264445159|"RbxscrIptConnectinG"--
+	--made in T10-Studio by: t10_kol|ID:3264445159|RbxscrIptConnectinG--
 	
 	Copyright©: None, feel free to use, edit, sell and distribute this util 
 				anywhere you want and any time you want ;)
-	
-	--dev commentary--
-	
-	(t10_kol): "unreadable."
-
-	--info--
-
-	Version: 0.0.6
-	
-	Container.new() = {
-		Validate: function(Indexes) -> checks if indexes in "_connections"|"_any" are available. returns ...boolean (found: true, not found: false)
-		Get: function(Indexes) -> gets items in "_connections"|"_any" if available. returns ...any
-		
-		IsItIn: function(Index,"Connections"|"Any") -> checks if index is from "_connections"|"_any". returns boolean, value
-		IsIt: function(Index,type) -> type checking for value of that index. returns boolean
-
-		GetPlainTable: function("Connections" | "Any") -> returns "_connections"|"_any" table
-
-		WaitFor: function(Index) -> waits for Index to be sorted and then returns index, value
-
-		Add: function(connection|any,CustomIndex) -> adds connection|any into "_connections" if RBXScriptConnection or "_any" if anything else. returns connection|any, newindex
-		Remove: function(Indexes) -> removes connection|any from "_connections"|"_any" if found. returns nothing
-		RemoveAndDestroy: function(Indexes) -> removes connection|any from "_connections"|"_any" and destroys|disconnects it. if found. returns nothing
-		
-		RemoveAllIn: function("Connections"|"Any"|"Both") -> removes everything from selected table. returns nothing
-		RemoveAndDestroyAllIn: function("Connections"|"Any"|"Both") -> removes and destroys|disconnects everything from selected table. returns nothing
-		
-		DisconnectAll: function(nil) -> disconnects everything in "_connections". returns nothing
-		DestroyAllAny: function(nil) -> destroys everything in "_any". returns nothing
-		SemiDestroy: function(nil) -> disconnects|destroys everything. returns nothing
-		Destroy: function(nil) -> disconnects|destroys everything and makes self empty. returns nothing
-	}
-	
-	--examples--
-	
-	local newContainer = Container.new()
-	
-	--two variants of getting a part and removing it after--
-	
-	1 = {
-		local Part,NewIndex = newContainer:Add(Instance.new("Part"),"CoolPart") 
-		
-		newContainer:Remove(NewIndex)
-	}
-	2 = {
-		newContainer:Add(Instance.new("Part"),"CoolPart") 
-		local Part = newContainer.CoolPart
-		
-		newContainer:Remove("CoolPart")
-	}
 
 --]]
 local printPrefix = "[CONTAINER]"
@@ -68,26 +18,13 @@ end
 local function isConnection(value: any?): (any: RBXScriptConnection | any) -> boolean
 	return typeof(value) == "RBXScriptConnection"
 end
-local Container = {}
 
--- more hooks will be added in next updates.. keep your heads up!
-Container._hookCatchers = {
-	newIndex = {},
-}
-Container._hooksCall = {
-	newIndex = function(_self, Index, Value)
-		if #Container._hookCatchers.newIndex > 0 then
-			for _, func in pairs(Container._hookCatchers.newIndex) do
-				func(Index, Value)
-			end
-		end
-	end,
-}
+local Container = {}
 
 Container._functions = {
 	_sort = function(self, index, value)
 		rawset(self[isConnection(value) and "_connections" or "_any"], index, value)
-		self.CONTAINER_hooksCall:newIndex(index, value)
+		self.CONTAINER_hooksCall.newIndex(self, index, value)
 	end,
 	Validate = function(self, ...)
 		local results = {}
@@ -151,6 +88,11 @@ Container._functions = {
 		return self[tbl]
 	end,
 	WaitFor = function(self, index)
+		local GetTry = self:Get(index)
+		if GetTry ~= nil then
+			return index, GetTry
+		end
+
 		local thread = coroutine.running()
 		self._yieldedthreads[thread] = true
 		local ID = #self.CONTAINER_hookCatchers.newIndex + 1
@@ -346,6 +288,22 @@ export type ContainerType<T...> = {
 function Container.new<T...>(preAddTable: { [any]: any } | nil): ContainerType<T...>?
 	local selfBase = {
 		_className = "Container",
+
+		-- more hooks will be added in next updates (maybe)
+		_hooks = {
+			_hookCatchers = {
+				newIndex = {},
+			},
+			_hooksCall = {
+				newIndex = function(self, Index, Value)
+					if #self.CONTAINER_hookCatchers.newIndex > 0 then
+						for _, func in pairs(self.CONTAINER_hookCatchers.newIndex) do
+							func(Index, Value)
+						end
+					end
+				end,
+			},
+		},
 		_yieldedthreads = {},
 		_connections = {},
 		_any = {},
@@ -362,8 +320,8 @@ function Container.new<T...>(preAddTable: { [any]: any } | nil): ContainerType<T
 			return rawget(tbl["_connections"], index)
 				or rawget(tbl["_any"], index)
 				or rawget(Container._functions, index)
-				or (index == "CONTAINER_hooksCall" and Container._hooksCall)
-				or (index == "CONTAINER_hookCatchers" and Container._hookCatchers)
+				or (index == "CONTAINER_hooksCall" and rawget(rawget(tbl, "_hooks"), "_hooksCall"))
+				or (index == "CONTAINER_hookCatchers" and rawget(rawget(tbl, "_hooks"), "_hookCatchers"))
 				or rawget(tbl, index)
 		end,
 	}
@@ -380,4 +338,4 @@ function Container.new<T...>(preAddTable: { [any]: any } | nil): ContainerType<T
 	return self
 end
 
-return Container --:: { new: (preAddTable: { [any]: any } | nil) -> ContainerType? }
+return Container :: { new: (preAddTable: { [any]: any } | nil) -> ContainerType<...any> }

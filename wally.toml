@@ -1,0 +1,12 @@
+[package]
+name = "rig/container"
+description = "Inspired by Maid"
+version = "0.0.6"
+license = "MIT"
+authors = ["t10_kol"]
+registry = "https://github.com/UpliftGames/wally-index"
+realm = "shared"
+exclude = ["**"]
+include = ["src", "src/**", "default.project.json", "README.md"]
+
+[dependencies]
