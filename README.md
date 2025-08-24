@@ -30,6 +30,7 @@ Adds value with or without custom index ( #table+1 used as index if customIndex 
         newOrCustomIndex : any | number
     )
 ```
+<img width="867" height="267" alt="image" src="https://github.com/user-attachments/assets/06841379-6b36-47eb-8484-bbb36e75f121" />
 
 # Remove
 Just removes value from table
